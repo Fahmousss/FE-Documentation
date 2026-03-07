@@ -1,0 +1,40 @@
+import { cva } from 'class-variance-authority';
+
+export const IconVariant = cva('', {
+  variants: {
+    mode: {
+      success: 'fill-green-500',
+      danger: 'fill-red-500',
+      info: 'fill-blue-500',
+      warning: 'fill-yellow-600',
+      default: 'fill-dark-100',
+      icon: 'fill-grey-400',
+      yellow: 'fill-yellow-800',
+      grey: 'fill-grey-500',
+      green: 'fill-green-700',
+      blue: 'fill-blue-700',
+      indigo: 'fill-violet-700',
+      white: 'fill-green-500',
+      red: 'fill-red-500',
+      sidebar: 'fill-neutral-600',
+      sidebarActive: 'fill-green-600',
+    },
+    strokeMode: {
+      success: 'stroke-green-500',
+      danger: 'stroke-red-500',
+      info: 'stroke-blue-500',
+      warning: 'stroke-yellow-600',
+      default: 'stroke-dark-100',
+      icon: 'stroke-grey-400',
+      yellow: 'stroke-yellow-800',
+      grey: 'stroke-grey-500',
+      green: 'stroke-grey-700',
+      blue: 'stroke-blue-700',
+      indigo: 'stroke-violet-700',
+      white: 'stroke-green-500',
+      red: 'stroke-red-500',
+      sidebar: 'stroke-neutral-600',
+      sidebarActive: 'stroke-green-600',
+    },
+  },
+});

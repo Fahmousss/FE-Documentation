@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Suppress deprecated option warnings for TS 6.x */
+    "ignoreDeprecations": "6.0",
+
+    /* Plugins */
+    "plugins": [
+      {
+        "name": "ts-plugin-sort-import-suggestions",
+        "moveUpPatterns": ["@/", "\\.{1,2}/"],
+        "moveDownPatterns": ["antd"]
+      }
+    ],
+
+    /* Bundler mode */
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@core/*": ["./src/core/*"],
+      "@shared/*": ["./src/shared/*"]
+    }
+  },
+
+  "include": ["src", "**/*.ts", "**/*.js"],
+  "exclude": ["vite.config.ts", "node_modules"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

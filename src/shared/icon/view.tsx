@@ -1,0 +1,57 @@
+import { cn } from '@/core/utils/class.utils';
+import { forwardRef } from 'react';
+import { IconVariant } from './variants';
+import { IconProps } from './types';
+
+interface IconView extends IconProps {}
+
+const IconView = forwardRef<SVGSVGElement, IconView>(
+  ({ mode = 'default', width, height, ...props }, ref) => {
+    return (
+      <svg
+        ref={ref}
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width={width ?? 24}
+        height={height ?? 24}
+        viewBox="0 0 24 24"
+        fill="none"
+      >
+        <path
+          d="M16.6667 7.37484V15.4998C16.6667 17.9998 15.175 18.8332 13.3334 18.8332H6.66671C4.82504 18.8332 3.33337 17.9998 3.33337 15.4998V7.37484C3.33337 4.6665 4.82504 4.0415 6.66671 4.0415C6.66671 4.55817 6.87502 5.02483 7.21668 5.3665C7.55835 5.70817 8.02504 5.9165 8.54171 5.9165H11.4584C12.4917 5.9165 13.3334 5.07484 13.3334 4.0415C15.175 4.0415 16.6667 4.6665 16.6667 7.37484Z"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(IconVariant({ strokeMode: mode }))}
+        />
+        <path
+          d="M13.3333 4.0415C13.3333 5.07484 12.4916 5.9165 11.4583 5.9165H8.54163C8.02496 5.9165 7.55827 5.70817 7.2166 5.3665C6.87494 5.02483 6.66663 4.55817 6.66663 4.0415C6.66663 3.00817 7.50829 2.1665 8.54163 2.1665H11.4583C11.975 2.1665 12.4416 2.37484 12.7833 2.71651C13.125 3.05817 13.3333 3.52484 13.3333 4.0415Z"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(IconVariant({ strokeMode: mode }))}
+        />
+        <path
+          d="M6.66663 11.3335H9.99996"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(IconVariant({ strokeMode: mode }))}
+        />
+        <path
+          d="M6.66663 14.6665H13.3333"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(IconVariant({ strokeMode: mode }))}
+        />
+      </svg>
+    );
+  },
+);
+
+export default IconView;
