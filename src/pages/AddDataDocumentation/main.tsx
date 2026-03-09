@@ -54,7 +54,7 @@ const AddDataDocumentation = () => {
             </div >
 
             {/* ── Card utama ── */}
-            <CardSection className="mt-[85px] ">
+            <CardSection className="mt-[70px] ">
                 {/* Header */}
                 <div className="mb-4">
                     <p className="text-xl font-bold">{pageLabel}</p>
@@ -69,9 +69,9 @@ const AddDataDocumentation = () => {
                             type="button"
                             onClick={() => setActiveTab(tab.key)}
                             className={`
-                                    px-6 py-3 text-sm font-medium transition-colors duration-150
+                                    px-6 py-3 text-sm w-full font-medium transition-colors duration-150
                                     ${activeTab === tab.key
-                                    ? "border-b-2 w-[25%] border-[#22b07d] text-[#22b07d] transition-all"
+                                    ? "border-b-2 border-[#22b07d] text-[#22b07d] transition-all"
                                     : "text-gray-500 hover:text-gray-700"
                                 }
                                 `}

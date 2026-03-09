@@ -1,140 +1,340 @@
-import { Form, Input, Select } from "antd"; 
-import ButtonDelete from "@/shared/button/components/button-delete"; 
-import { useState } from "react";
+import { Input, Select } from "antd";
+import ButtonDelete from "@/shared/button/components/button-delete";
+import { useState, useRef } from "react";
 import FormLabel from "@/shared/form/label";
 import RichTextEditor from "@/shared/RichTextEditor/RichTextEditor";
-
+import { GripVertical, ChevronDown, ChevronUp } from "lucide-react";
+import CardSection from "./CardSection";
+import {
+    IPreferencesItem,
+    IPreferencesSection,
+    IPreferencesRequest,
+} from "@/pages/documentation/utils/model";
+import usePreferencesMutation from "@/pages/documentation/hooks/use-preferences-mutation";
+// import usePreferencesMutation from "@/pages/documentation/hooks/use-preferences-mutation";
 
 interface TabPreferencesProps {
     id?: string;
 }
 
-/**
- * Tab Preferences
- * Struktur: Product Name → Section (accordion) → Section Name → Submenu tabs → Menu input → Content
- * Mirip Docs tapi tanpa level Menu (langsung submenu)
- */
-const TabPreferences = ({ id }: TabPreferencesProps) => {
-    const [form] = Form.useForm();
+// ─── Helpers ──────────────────────────────────────────────
+const uid = () => Math.random().toString(36).slice(2, 9);
 
-    const onFinish = (values: unknown) => {
-        console.log("TabPreferences submit:", values, "id:", id);
+const makeItem = (i: number): IPreferencesItem => ({
+    id: uid(), name: `Item ${i + 1}`, content: "", sortOrder: i,
+});
+
+const makeSection = (i: number): IPreferencesSection => ({
+    id: uid(), name: "", sortOrder: i,
+    items: [makeItem(0), makeItem(1), makeItem(2)],
+});
+
+// ─── Draggable hook ───────────────────────────────────────
+function useDrag<T>(
+    items: T[],
+    setItems: React.Dispatch<React.SetStateAction<T[]>>
+) {
+    const dragIdx = useRef<number | null>(null);
+    const onDragStart = (i: number) => { dragIdx.current = i; };
+    const onDragOver = (e: React.DragEvent, i: number) => {
+        e.preventDefault();
+        if (dragIdx.current === null || dragIdx.current === i) return;
+        const next = [...items];
+        const [moved] = next.splice(dragIdx.current, 1);
+        next.splice(i, 0, moved);
+        dragIdx.current = i;
+        setItems(next);
     };
+    const onDragEnd = () => { dragIdx.current = null; };
+    return { onDragStart, onDragOver, onDragEnd };
+}
 
+// ─── Pill Tabs ────────────────────────────────────────────
+interface PillItem { id: string; name: string; }
+interface PillTabsProps {
+    items: PillItem[];
+    activeId: string;
+    onSelect: (id: string) => void;
+    onAdd: () => void;
+    onDelete: (id: string) => void;
+    onDragReorder: (newItems: PillItem[]) => void;
+}
+
+const PillTabs = ({ items, activeId, onSelect, onAdd, onDelete, onDragReorder }: PillTabsProps) => {
+    const { onDragStart, onDragOver, onDragEnd } = useDrag(items, onDragReorder as any);
     return (
-        <Form form={form} layout="vertical" onFinish={onFinish} className="flex flex-col gap-4">
-            {/* Product Name */}
-            <Form.Item
-                name="product_name"
-                label={<FormLabel label="Product Name" />}
-                rules={[{ required: true, message: "Product Name is required" }]}
-            >
-                <Select placeholder="Select product name" />
-            </Form.Item>
-
-            {/* Section */}
-            <div className="border border-gray-200 rounded-md">
-                <div className="flex items-center justify-between px-4 py-2 bg-gray-50 rounded-t-md">
-                    <span className="font-medium text-sm">Section</span>
-                    <button
-                        type="button"
-                        className="w-6 h-6 rounded bg-[#22b07d] text-white flex items-center justify-center text-lg leading-none"
+        <div className="flex flex-wrap items-center mt-2">
+            {items.map((item, i) => (
+                <div
+                    key={item.id}
+                    draggable
+                    onDragStart={() => onDragStart(i)}
+                    onDragOver={(e) => onDragOver(e, i)}
+                    onDragEnd={onDragEnd}
+                    onClick={() => onSelect(item.id)}
+                    className={`
+                        flex items-center gap-1.5 px-4 py-1.5 rounded-t-lg text-sm cursor-pointer border transition-all select-none
+                        ${activeId === item.id
+                            ? "bg-white text-[#01B763] border-[#01B763] shadow-sm"
+                            : "bg-white text-[#D0D1DD] border-[#D0D1DD] font-semibold hover:border-gray-300 hover:bg-gray-50"
+                        }
+                    `}
+                >
+                    <GripVertical size={14} className="opacity-40" />
+                    <span className="font-medium">{item.name}</span>
+                    <span
+                        className={`ml-1 text-lg font-light leading-none hover:opacity-70 px-1
+                        ${activeId === item.id ? "text-[#01B763]" : "text-[#D0D1DD]"}`}
+                        onClick={(e) => { e.stopPropagation(); onDelete(item.id); }}
                     >
-                        +
-                    </button>
+                        ×
+                    </span>
                 </div>
-
-                <Form.List name="sections">
-                    {(fields, { add, remove }) => (
-                        <>
-                            {fields.length === 0 && add()}
-                            {fields.map((field, sectionIndex) => (
-                                <PrefSectionItem
-                                    key={field.key}
-                                    field={field}
-                                    sectionIndex={sectionIndex}
-                                    onRemove={() => remove(field.name)}
-                                    showRemove={fields.length > 1}
-                                />
-                            ))}
-                        </>
-                    )}
-                </Form.List>
-            </div>
-        </Form>
+            ))}
+            <button
+                type="button"
+                onClick={onAdd}
+                className="w-8 h-8 rounded-t-lg bg-white text-[#D0D1DD] flex items-center border-2 justify-center text-lg leading-none hover:text-[#01B763] hover:border-[#01B763] transition-colors shadow-sm"
+            >
+                +
+            </button>
+        </div>
     );
 };
 
-// ─── Preferences Section Item ──────────────────────────────
-interface PrefSectionItemProps {
-    field: { key: number; name: number };
-    sectionIndex: number;
-    onRemove: () => void;
-    showRemove: boolean;
+// ─── Section Block ────────────────────────────────────────
+interface SectionBlockProps {
+    section: IPreferencesSection;
+    index: number;
+    showDelete: boolean;
+    dragHandleProps: {
+        draggable: boolean;
+        onDragStart: () => void;
+        onDragOver: (e: React.DragEvent) => void;
+        onDragEnd: () => void;
+    };
+    onChange: (updated: IPreferencesSection) => void;
+    onDelete: () => void;
 }
 
-const PrefSectionItem = ({ field, sectionIndex, onRemove, showRemove }: PrefSectionItemProps) => {
-    const [collapsed, setCollapsed]           = useState(false);
-    const [activeSubmenuTab, setActiveSubmenuTab] = useState(0);
+const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, onDelete }: SectionBlockProps) => {
+    const [collapsed, setCollapsed] = useState(false);
+    const [activeItemId, setActiveItemId] = useState(section.items[0]?.id ?? "");
 
-    const submenuTabs = ["Submenu 1", "Submenu 2", "Submenu 3"];
+    const activeItem = section.items.find(s => s.id === activeItemId) ?? section.items[0];
+
+    const updateSectionName = (name: string) => onChange({ ...section, name });
+
+    const addItem = () => {
+        const newItem = makeItem(section.items.length);
+        onChange({ ...section, items: [...section.items, newItem] });
+        setActiveItemId(newItem.id);
+    };
+
+    const deleteItem = (itemId: string) => {
+        if (section.items.length <= 1) return;
+        const items = section.items.filter(s => s.id !== itemId);
+        onChange({ ...section, items });
+        if (activeItemId === itemId) setActiveItemId(items[0].id);
+    };
+
+    const reorderItems = (reordered: PillItem[]) => {
+        const itemMap = Object.fromEntries(section.items.map(s => [s.id, s]));
+        onChange({ ...section, items: reordered.map(r => itemMap[r.id]) });
+    };
+
+    const updateItemName = (name: string) => {
+        onChange({
+            ...section,
+            items: section.items.map(s => s.id === activeItemId ? { ...s, name } : s),
+        });
+    };
+
+    const updateContent = (content: string) => {
+        onChange({
+            ...section,
+            items: section.items.map(s => s.id === activeItemId ? { ...s, content } : s),
+        });
+    };
 
     return (
-        <div className="border-t border-gray-200">
-            <div
-                className="flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-50"
-                onClick={() => setCollapsed(!collapsed)}
-            >
-                <span className="text-sm font-medium">
-                    {collapsed ? "▶" : "▼"} Section {sectionIndex + 1}
-                </span>
-                {showRemove && (
+        <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
+            {/* Accordion Header */}
+            <div className="flex items-center justify-between px-2 py-2 bg-secondary/10 border-gray-200 select-none">
+                <div className="flex items-center gap-2 flex-1 cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
+                    <div
+                        {...dragHandleProps}
+                        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+                        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                    >
+                        <GripVertical size={16} />
+                    </div>
+                    {collapsed
+                        ? <ChevronDown size={14} className="text-gray-500" />
+                        : <ChevronUp size={14} className="text-gray-500" />
+                    }
+                    <span className="text-md font-bold">
+                        {section.name ? section.name : `Section ${index + 1}`}
+                    </span>
+                </div>
+                {showDelete && (
                     <ButtonDelete
                         type="button"
-                        onClick={(e) => { e.stopPropagation(); onRemove(); }}
+                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); onDelete(); }}
                     />
                 )}
             </div>
 
+            {/* Accordion Body */}
             {!collapsed && (
-                <div className="px-4 pb-4 flex flex-col gap-3">
+                <div className="p-6 flex flex-col gap-4">
                     {/* Section Name */}
-                    <Form.Item
-                        name={[field.name, "section_name"]}
-                        label={<FormLabel label="Section Name" />}
-                    >
-                        <Input placeholder="Input section" />
-                    </Form.Item>
-
-                    {/* Submenu tabs */}
-                    <div className="flex gap-2 flex-wrap">
-                        {submenuTabs.map((tab, i) => (
-                            <span
-                                key={i}
-                                onClick={() => setActiveSubmenuTab(i)}
-                                className={`px-3 py-1 rounded-full text-xs cursor-pointer border transition-colors
-                                    ${activeSubmenuTab === i
-                                        ? "bg-[#22b07d] text-white border-[#22b07d]"
-                                        : "bg-white text-gray-600 border-gray-300"
-                                    }`}
-                            >
-                                {tab} {activeSubmenuTab === i && "×"}
-                            </span>
-                        ))}
-                        <span className="px-2 py-1 text-gray-400 cursor-pointer text-sm">+</span>
+                    <div>
+                        <FormLabel label="Section Name" />
+                        <Input
+                            placeholder="Input section"
+                            value={section.name}
+                            onChange={e => updateSectionName(e.target.value)}
+                            className="w-full mt-1"
+                        />
                     </div>
 
-                    {/* Menu input */}
-                    <Form.Item name={[field.name, "menu"]} label={<FormLabel label="Menu" />}>
-                        <Input placeholder="Input menu" />
-                    </Form.Item>
+                    {/* Item Pills */}
+                    <PillTabs
+                        items={section.items}
+                        activeId={activeItemId}
+                        onSelect={setActiveItemId}
+                        onAdd={addItem}
+                        onDelete={deleteItem}
+                        onDragReorder={reorderItems}
+                    />
+                    <CardSection className="mt-[-16px] rounded-t-none">
+                        {/* Item Name → dikirim sebagai itemName */}
+                        <div className="mb-4">
+                            <FormLabel label="Item Name" />
+                            <Input
+                                placeholder="Input item name"
+                                value={activeItem?.name ?? ""}
+                                onChange={e => updateItemName(e.target.value)}
+                                className="w-full mt-1"
+                            />
+                        </div>
 
-                    {/* Content */}
-                    <Form.Item name={[field.name, "content"]} label={<FormLabel label="Content" />}>
-                        <RichTextEditor />
-                    </Form.Item>
+                        {/* Content */}
+                        <div>
+                            <FormLabel label="Content" />
+                            <div className="mt-1 max-h-[500px] overflow-none">
+                                <RichTextEditor
+                                    key={activeItemId}
+                                    value={activeItem?.content ?? ""}
+                                    onChange={updateContent}
+                                />
+                            </div>
+                        </div>
+                    </CardSection>
                 </div>
             )}
+        </div>
+    );
+};
+
+// ─── Main TabPreferences ──────────────────────────────────
+const TabPreferences = ({ id }: TabPreferencesProps) => {
+    const [productId, setProductId] = useState<string | undefined>();
+    const [sections, setSections] = useState<IPreferencesSection[]>([makeSection(0)]);
+
+    const {
+        updatePreferences,
+        isPendingUpdatePreferences,
+    } = usePreferencesMutation();
+
+    const { onDragStart, onDragOver, onDragEnd } = useDrag(sections, setSections);
+
+    const handleSubmit = async () => {
+        if (!productId) return;
+
+        // Map IPreferencesSection → IPreferencesRequestSection
+        const body: IPreferencesRequest = {
+            sections: sections.map((sec) => ({
+                id: sec.id,
+                name: sec.name,
+                sortOrder: sec.sortOrder,
+                items: sec.items.map((item) => ({
+                    id: item.id,
+                    itemName: item.name, // field lokal "name" → API "itemName"
+                    content: item.content,
+                    sortOrder: item.sortOrder,
+                })),
+            })),
+        };
+
+        // Preferences menggunakan PUT dengan productId di URL
+        await updatePreferences({ body, productId });
+    };
+
+    return (
+        <div className="flex flex-col gap-4">
+            {/* Product Name */}
+            <div>
+                <FormLabel label="Product Name" className="ml-[0px]" />
+                <Select
+                    placeholder="Select product name"
+                    style={{ width: "100%" }}
+                    className="mt-1"
+                    value={productId}
+                    onChange={setProductId}
+                />
+            </div>
+
+            {/* Section header */}
+            <div className="flex items-center justify-between mt-[-4px]">
+                <span className="text-left text-sm font-bold whitespace-pre-line pl-2 border-l-4 border-[#00B887]">
+                    Section
+                </span>
+                <button
+                    type="button"
+                    onClick={() => setSections(prev => [...prev, makeSection(prev.length)])}
+                    className="w-6 h-6 rounded bg-[#01B763] text-white flex items-center justify-center text-lg leading-none hover:bg-[#1a9068] transition-colors"
+                >
+                    +
+                </button>
+            </div>
+
+            {/* Sections */}
+            <div className="flex flex-col gap-3 mt-[-8px]">
+                {sections.map((section, idx) => (
+                    <SectionBlock
+                        key={section.id}
+                        section={section}
+                        index={idx}
+                        showDelete={sections.length > 1}
+                        dragHandleProps={{
+                            draggable: true,
+                            onDragStart: () => onDragStart(idx),
+                            onDragOver: (e) => onDragOver(e, idx),
+                            onDragEnd,
+                        }}
+                        onChange={(updated) =>
+                            setSections(prev => prev.map((s, i) => i === idx ? updated : s))
+                        }
+                        onDelete={() =>
+                            setSections(prev => prev.filter((_, i) => i !== idx))
+                        }
+                    />
+                ))}
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end mt-2">
+                <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={isPendingUpdatePreferences || !productId}
+                    className="px-6 py-2 rounded bg-[#01B763] text-white text-sm font-semibold hover:bg-[#05b965de] transition-colors"
+                >
+                    {isPendingUpdatePreferences ? "Saving..." : id ? "Update" : "Save"}
+                </button>
+            </div>
         </div>
     );
 };

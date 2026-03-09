@@ -9,16 +9,13 @@ import useTableDocumentations from "./hooks/use-table-documentations";
 import { ChangeEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { flexRender } from "@tanstack/react-table";
-import { IDocumentationItem } from "./utils/model";
+import { IProductItem } from "./utils/model";
 import { Table } from "@/shared/table";
 
 const Documentations = () => {
     const navigate = useNavigate();
-
-    // hooks params 
     const { id } = useParams();
 
-    // hook modal
     const {
         open: openDelete,
         openModal: openModalDelete,
@@ -27,7 +24,6 @@ const Documentations = () => {
         setMessage,
     } = useModal();
 
-    // ✅ handler edit & create
     const addOrEditDataHandler = (id?: string) => {
         if (id) {
             navigate(`/Documentation/EditDataDocumentation/${id}`);
@@ -36,40 +32,30 @@ const Documentations = () => {
         navigate('/Documentation/AddDataDocumentation');
     };
 
-    // ✅ handler delete — buka modal dan set pesan
-    const deleteHandler = (item: IDocumentationItem) => {
+    const deleteHandler = (item: IProductItem) => {
         setMessage(`Apakah kamu yakin ingin menghapus "${item.name}"?`);
         openModalDelete();
     };
 
-    // hook fetch documentation data
     const {
         dataDocumentations,
-        refetchDocumentations,
         pagination,
         isLoadingDocumentations,
-        filters: { setPageNumber, setPageSize, setSearchTerm }
+        filters: { setPageNumber, setPageSize, setSearchTerm },
     } = useDocumentationsPaginated(id);
 
-    console.log(dataDocumentations);
-    
-
-    // ✅ hook table — passing edit & delete handler
     const { table, isTableData } = useTableDocumentations({
         dataSource: dataDocumentations,
-        editHandler: (item) => addOrEditDataHandler(item.id), // ✅ kirim UUID
+        editHandler: (item) => addOrEditDataHandler(item.id),
         deleteHandler: (item) => deleteHandler(item),
     });
 
-    // handler search
     const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
         setPageNumber(1);
     };
 
-    // ✅ handler confirm delete (dipanggil saat klik OK di modal)
     const onDeleteHandler = () => {
-        // panggil mutation delete di sini jika ada
         closeModalDelete();
     };
 
@@ -82,17 +68,12 @@ const Documentations = () => {
                             title="Documentations Table"
                             subTitle="Data table information"
                         />
-
                         <div className="flex items-center gap-3 flex-shrink-0">
-                            <InputSearch
-                                size="large"
-                                searchHandler={searchHandler}
-                            />
-
+                            <InputSearch size="large" searchHandler={searchHandler} />
                             <ButtonEID
                                 variant="primary"
                                 size="small"
-                                onClick={() => addOrEditDataHandler()} // ✅ tanpa id = create
+                                onClick={() => addOrEditDataHandler()}
                                 className="whitespace-nowrap"
                             >
                                 + Add Data
@@ -105,7 +86,7 @@ const Documentations = () => {
                         pagination={pagination}
                         setPageNumber={setPageNumber}
                         setPageSize={setPageSize}
-                        isLoading={isLoadingDocumentations} // ✅ dari hook
+                        isLoading={isLoadingDocumentations}
                         isTableData={isTableData}
                     >
                         <Table.Header>
@@ -160,7 +141,7 @@ const Documentations = () => {
                 onCancel={closeModalDelete}
                 message={message}
                 onOk={onDeleteHandler}
-                isLoading={false} // ✅ ganti dengan isPending dari mutation delete jika ada
+                isLoading={false}
             />
         </div>
     );

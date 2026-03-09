@@ -209,7 +209,7 @@ const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, o
     return (
         <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
             {/* Accordion Header */}
-            <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-100 select-none">
+            <div className="flex items-center justify-between px-2 py-2 bg-secondary/10 border-gray-200 select-none">
                 <div className="flex items-center gap-2 flex-1 cursor-pointer" onClick={() => setCollapsed(!collapsed)}>
                     <div
                         {...dragHandleProps}
@@ -222,7 +222,7 @@ const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, o
                         ? <ChevronDown size={14} className="text-gray-500" />
                         : <ChevronUp size={14} className="text-gray-500" />
                     }
-                    <span className="text-sm font-medium">Section {index + 1}</span>
+                    <span className="text-md font-bold">{section.name ? section.name : `Section ${index + 1}`}</span>
                 </div>
                 {showDelete && (
                     <ButtonDelete
@@ -234,7 +234,7 @@ const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, o
 
             {/* Accordion Body */}
             {!collapsed && (
-                <div className="px-4 pb-4 pt-3 flex flex-col gap-4">
+                <div className="p-6 flex flex-col gap-4">
                     {/* Section Name */}
                     <div>
                         <FormLabel label="Section Name" />
@@ -259,9 +259,9 @@ const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, o
                         onDelete={deleteMenu}
                         onDragReorder={reorderMenus}
                     />
-                    <CardSection className="mt-[-16px] rounded-none">
+                    <CardSection className="mt-[-16px] rounded-t-none">
                         {/* Menu Name */}
-                        <div>
+                        <div className="mb-4">
                             <FormLabel label="Menu" />
                             <Input
                                 placeholder="Input menu"
@@ -280,9 +280,9 @@ const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, o
                             onDelete={deleteSubmenu}
                             onDragReorder={reorderSubmenus}
                         />
-                        <CardSection className="rounded-none">
+                        <CardSection className="rounded-t-none">
                             {/* Submenu Name */}
-                            <div>
+                            <div className="mb-4">
                                 <FormLabel label="Submenu" />
                                 <Input
                                     placeholder="Input submenu"
@@ -295,7 +295,7 @@ const SectionBlock = ({ section, index, showDelete, dragHandleProps, onChange, o
                             {/* Content */}
                             <div>
                                 <FormLabel label="Content" />
-                                <div className="mt-1 max-h-[500px] overflow-auto">
+                                <div className="mt-1 max-h-[500px] overflow-none">
                                     <RichTextEditor
                                         key={activeSubmenuId}
                                         value={activeSubmenu?.content ?? ""}
@@ -317,8 +317,6 @@ const TabDocs = ({ id }: TabDocsProps) => {
     const [sections, setSections] = useState<IDocumentationSection[]>([makeSection(0)]);
 
     const {
-        createDocumentations,
-        isPendingCreateDocumetations,
         updateDocumetations,
         isPendingUpdateDocumetations,
     } = useDocumentationsMutation();
@@ -333,14 +331,10 @@ const TabDocs = ({ id }: TabDocsProps) => {
             sections,
         };
 
-        if (id) {
-            await updateDocumetations({ body, id });
-        } else {
-            await createDocumentations(body);
-        }
+        await updateDocumetations({ body, id });
     };
 
-    const isPending = isPendingCreateDocumetations || isPendingUpdateDocumetations;
+    const isPending = isPendingUpdateDocumetations;
 
     return (
         <div className="flex flex-col gap-4">
@@ -358,7 +352,7 @@ const TabDocs = ({ id }: TabDocsProps) => {
 
             {/* Section header */}
             <div className="flex items-center justify-between mt-[-4px]">
-                <span className="font-bold text-sm">Section</span>
+                <span className="text-left text-sm font-bold whitespace-pre-line pl-2 border-l-4 border-[#00B887]">Section</span>
                 <button
                     type="button"
                     onClick={() => setSections(prev => [...prev, makeSection(prev.length)])}

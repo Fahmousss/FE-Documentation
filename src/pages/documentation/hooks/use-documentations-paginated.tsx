@@ -33,7 +33,7 @@ export default function useDocumentationsPaginated(productId: string) {
   const pagination = getPaginationHeaders(data);
 
   return {
-    dataDocumentations: data?.data.data.items ?? [],
+    dataDocumentations: data?.data?.data?.items ?? [],
     refetchDocumentations: refetch,
     isLoadingDocumentations: isLoading,
     isErrorDocumentations: isError,
