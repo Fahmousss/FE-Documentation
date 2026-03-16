@@ -1,4 +1,4 @@
-import AddDataDocumentation from '@/pages/AddDataDocumentation/main';
+import AddDataDocumentation from '@/pages/add-data-documentation/main';
 import Documentations from '@/pages/documentation/main';
 import Layout from '@/pages/layout/main';
 import Products from '@/pages/product/main';
@@ -6,8 +6,8 @@ import AuthRedirect from '@/shared/authentication/auth-redirect';
 import { Login } from '@/shared/login';
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
- 
-const SubPage = lazy(() => import('@/pages/example/main')); 
+
+const SubPage = lazy(() => import('@/pages/example/main'));
 const User = lazy(() => import('@/pages/user/main'));
 const Role = lazy(() => import('@/pages/role/main'));
 const Notification = lazy(() => import('@/pages/notification/main'));
@@ -33,7 +33,7 @@ const Router = createBrowserRouter([
         element: <Documentations />,
       },
       {
-        path: '/documentation/AddDataDocumentation',
+        path: '/documentation/add',
         element: <AddDataDocumentation />,
       },
       {

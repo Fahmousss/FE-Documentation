@@ -71,9 +71,10 @@ export default function useTableDocumentations({
           />
         ),
         cell: ({ row }) => {
-          const names = (row.original.sections ?? []).map(
-            (s: any, i: number) => s?.name ?? s?.title ?? `Section ${i + 1}`
-          );
+          const names = (row.original.sections ?? []).map((s, i) => {
+            return s ?? s ?? `Section ${i + 1}`;
+          });
+
           return <BulletList items={names} fallback="No sections" />;
         },
         footer: (info) => info.column.id,

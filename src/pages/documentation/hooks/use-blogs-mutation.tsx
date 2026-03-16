@@ -1,11 +1,12 @@
 import { useMessageContext } from '@/core/hooks/use-message-context';
 import { HTTPResponse } from '@/core/models/http.types';
 import axios from '@/core/utils/axios.utils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { IBlogRequest } from '../utils/model';
 
 export default function useBlogMutation() {
   const { openMessage } = useMessageContext();
+  const queryClient = useQueryClient();
 
   // Blog menggunakan PUT (upsert) sesuai endpoint
   const { mutateAsync: updateBlog, isPending: isPendingUpdateBlog } = useMutation({
@@ -13,6 +14,7 @@ export default function useBlogMutation() {
       return axios.put<HTTPResponse<string>>(`/products/${productId}/blog`, body);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs-by-product'] });
       openMessage({
         title: 'Success',
         mode: 'success',
@@ -33,6 +35,7 @@ export default function useBlogMutation() {
       return axios.delete<HTTPResponse<string>>(`/products/${productId}/blog`);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs-by-product'] });
       openMessage({
         title: 'Success',
         mode: 'success',

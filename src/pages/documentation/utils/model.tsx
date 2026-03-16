@@ -67,9 +67,9 @@ export interface IDocumentationRequest {
 /** Satu item showcase untuk keperluan state lokal di TabShowcase */
 export interface IShowcaseItem {
   id: string;
-  name: string;       // label pill tab, tidak dikirim ke API
-  photo: File | null; // file lokal sebelum diupload, dikirim sebagai mediaUrl
-  date: any | null;   // Dayjs object dari DatePicker
+  name: string; // label pill tab, tidak dikirim ke API
+  photo: any | null; // file lokal sebelum diupload, dikirim sebagai mediaUrl
+  publishDate: any | null; // Dayjs object dari DatePicker
   title: string;
   description: string;
   content: string;
@@ -81,11 +81,11 @@ export interface IShowcaseRequestItem {
   title: string;
   description: string;
   mediaUrl: string;
+  publishDate: string;
   content: string;
   sortOrder: number;
 }
 export interface IShowcaseRequest {
-  product_id: string;
   items: IShowcaseRequestItem[];
 }
 /** Satu item showcase dari response API */
@@ -95,6 +95,7 @@ export interface IShowcaseResponseItem {
   title: string;
   description: string;
   media_url: string;
+  publish_date: string;
   content: string;
   sort_order: number;
 }
@@ -112,7 +113,7 @@ export interface IShowcaseResponse {
 /** Satu item dalam section, untuk state lokal di TabPreferences */
 export interface IPreferencesItem {
   id: string;
-  name: string;   // label pill tab → dikirim sebagai itemName
+  name: string; // label pill tab → dikirim sebagai itemName
   content: string;
   sortOrder: number;
 }
@@ -169,12 +170,12 @@ export interface IBlogCreator {
 /** Satu blog untuk state lokal di TabBlog */
 export interface IBlogItem {
   id: string;
-  name: string;         // label pill tab, tidak dikirim ke API
+  name: string; // label pill tab, tidak dikirim ke API
   title: string;
-  publishDate: string;  // ISO 8601, dari DatePicker
+  publishDate: any | null; // ISO 8601, dari DatePicker
   description: string;
   content: string;
-  heroImage: File | null; // file lokal → dikirim sebagai heroImageUrl setelah upload
+  heroImage: any | null; // file lokal → dikirim sebagai heroImageUrl setelah upload
   creators: IBlogCreator[];
   sortOrder: number;
 }
@@ -183,7 +184,7 @@ export interface IBlogItem {
 export interface IBlogRequestSection {
   id: string;
   title: string;
-  publishDate: string;  // ISO 8601 e.g. "2019-08-24T14:15:22Z"
+  publishDate: string; // ISO 8601 e.g. "2019-08-24T14:15:22Z"
   description: string;
   content: string;
   heroImageUrl: string;
