@@ -1,6 +1,7 @@
 export const DEV = import.meta.env.DEV;
 export const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const SIGNALR_URL = import.meta.env.VITE_SIGNALR;
+export const CDN_URL = import.meta.env.VITE_CDN_URL;
 
 export const ACCESS_TOKEN = 'accessToken';
 export const REFRESH_TOKEN = 'refreshToken';

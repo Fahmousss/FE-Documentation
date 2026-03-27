@@ -38,20 +38,24 @@ const BlogsForm = ({ productId, initialBlogs }: BlogsFormProps) => {
         id: b.id,
         title: b.title || '',
         // Reverse dayjs formatted date back to ISO 8601 strings
-        publishDate: b.publishDate && dayjs.isDayjs(b.publishDate)
-          ? b.publishDate.toISOString()
-          : typeof b.publishDate === 'string' ? b.publishDate : '',
+        publishDate:
+          b.publishDate && dayjs.isDayjs(b.publishDate)
+            ? b.publishDate.toISOString()
+            : typeof b.publishDate === 'string'
+              ? b.publishDate
+              : '',
         description: b.description || '',
         content: b.content || '',
-        heroImageUrl: typeof b.heroImage === 'string' ? b.heroImage : '', // TODO: properly upload heroImage later and map url here
+        heroImageUrl: typeof b.heroImage === 'string' ? b.heroImage : '',
         creators: (b.creators || []).map((c) => ({
           name: c.name || '',
-          photoUrl: typeof c.photoUrl === 'string' ? c.photoUrl : '', // TODO: upload foto creator lalu isi URL-nya
+          photoUrl: typeof c.photoUrl === 'string' ? c.photoUrl : '',
         })),
         sortOrder: b.sortOrder,
       })),
     };
 
+    console.log(body);
     await updateBlog({ body, productId });
   };
 

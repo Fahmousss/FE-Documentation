@@ -1,9 +1,9 @@
-import axiosInstance, { AxiosInstance } from 'axios';
-import Cookies from 'js-cookie';
-import { ACCESS_TOKEN } from '../constant/config.constant';
+import axiosInstance, { AxiosInstance } from "axios";
+import Cookies from "js-cookie";
+import { ACCESS_TOKEN, CDN_URL } from "../constant/config.constant";
 
 const axiosCdn: AxiosInstance = axiosInstance.create({
-  baseURL: 'https://api.cdnjs.com/libraries',
+  baseURL: CDN_URL,
   maxBodyLength: Infinity,
   maxContentLength: Infinity,
 });
@@ -18,7 +18,7 @@ axiosCdn.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error);
-  },
+  }
 );
 
 axiosCdn.interceptors.response.use(
@@ -27,11 +27,11 @@ axiosCdn.interceptors.response.use(
     if (axiosInstance.isAxiosError(error)) {
       if (error.response?.status === 401) {
         Cookies.remove(ACCESS_TOKEN);
-        window.location.href = '/login';
+        window.location.href = "/login";
       }
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default axiosCdn;

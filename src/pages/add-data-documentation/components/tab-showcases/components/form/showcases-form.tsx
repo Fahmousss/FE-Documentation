@@ -43,14 +43,13 @@ const ShowcaseForm = ({ productId, id, initialShowcases }: ShowcaseFormProps) =>
         id: s.id,
         title: s.title,
         description: s.description,
-        mediaUrl: '', // TODO: upload s.photo terlebih dahulu lalu isi URL-nya di sini
+        mediaUrl: typeof s.photo === 'string' ? s.photo : '',
         publishDate: s.publishDate ? dayjs(s.publishDate).format('YYYY-MM-DD') : '',
         content: s.content,
         sortOrder: idx, // Ensure strict sort order mapped to UI
       })),
     };
 
-    console.log(body);
     await bulkUpdateShowcase({ body, productId });
   };
 
@@ -118,12 +117,8 @@ const ShowcaseForm = ({ productId, id, initialShowcases }: ShowcaseFormProps) =>
                     {/* Upload Foto */}
                     <div className="mb-4">
                       <div className="[&_input[type='file']]:hidden">
-                        <Form.Item name={[field.name, 'photo']}>
-                          <UploadImage
-                            onChange={(file) =>
-                              form.setFieldValue(['showcases', field.name, 'photo'], file)
-                            }
-                          />
+                        <Form.Item name={[field.name, 'photo']} noStyle shouldUpdate={true}>
+                          <UploadImage />
                         </Form.Item>
                       </div>
                     </div>

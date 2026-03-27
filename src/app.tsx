@@ -17,7 +17,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 function App() {
   return (
     <QueryClientProvider client={client}>
-      {DEV && <ReactQueryDevtools initialIsOpen={true} buttonPosition="bottom-left" />}
+      {/* {DEV && <ReactQueryDevtools initialIsOpen={true} buttonPosition="bottom-left" />} */}
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ConfigProviderAntd>
