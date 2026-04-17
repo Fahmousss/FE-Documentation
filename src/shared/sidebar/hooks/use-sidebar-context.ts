@@ -5,7 +5,7 @@ export interface SidebarContext {
   search: string;
   setSearch: (value: string) => void;
   dataSection: ISection[];
-  refetchSection: () => void;
+  // refetchSection: () => void;
 }
 
 export const SidebarContext = createContext<SidebarContext | null>(null);

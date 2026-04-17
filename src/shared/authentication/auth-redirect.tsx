@@ -1,7 +1,9 @@
+import { ACCESS_TOKEN } from '@/core/constant/config.constant';
+import Cookies from 'js-cookie';
 import { Navigate } from 'react-router-dom';
 
 const AuthRedirect = () => {
-  const token = true;
+  const token = Cookies.get(ACCESS_TOKEN);
   if (token) {
     return <Navigate to="/product" replace />;
   }
@@ -9,3 +11,4 @@ const AuthRedirect = () => {
 };
 
 export default AuthRedirect;
+

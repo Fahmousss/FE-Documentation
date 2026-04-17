@@ -1,12 +1,14 @@
-import useJwt from '@/core/hooks/use-jwt';
+import { USER_ID } from '@/core/constant/config.constant';
 import { useMessageContext } from '@/core/hooks/use-message-context';
 import axios from '@/core/utils/axios.utils';
 import { useMutation } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 import { IEditSidebarChildBody, ISidebarBody, ISidebarServerBody } from '../utils/models';
 
 export default function useSidebarMutation() {
   const { openMessage } = useMessageContext();
-  const { user_id } = useJwt();
+  const user_id = Cookies.get(USER_ID);
+
 
   const {
     mutateAsync: addSidebar,

@@ -4,15 +4,9 @@ export const SIGNALR_URL = import.meta.env.VITE_SIGNALR;
 export const CDN_URL = import.meta.env.VITE_CDN_URL;
 
 export const ACCESS_TOKEN = 'accessToken';
-export const REFRESH_TOKEN = 'refreshToken';
-export const ROLE = 'role';
+export const USER_ID = 'userId';
 export const USERNAME = 'username';
 
-export const USER_ROLE = {
-  ADMIN: 'Admin',
-  GUEST: 'Guest',
-  SUPER_ADMIN: 'Super Admin',
-};
 
 export const DEFAULT_EXPIRES_TOKEN = 365; // 365 days
 export const DEFAULT_DEBOUNCE_DELAY = 300;

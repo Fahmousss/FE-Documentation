@@ -1,12 +1,14 @@
-import useJwt from '@/core/hooks/use-jwt';
+import { USER_ID } from '@/core/constant/config.constant';
 import { HTTPResponse } from '@/core/models/http.types';
 import axios from '@/core/utils/axios.utils';
 import { createUrlWithQueryParams } from '@/core/utils/global.utils';
 import { useQuery } from '@tanstack/react-query';
+import Cookies from 'js-cookie';
 import { ISidebarServer, useSidebarChildProps } from '../utils/models';
 
 export default function useSidebarChild({ parent_id, is_parent }: useSidebarChildProps) {
-  const { user_id } = useJwt();
+  const user_id = Cookies.get(USER_ID);
+
 
   const { data, isError, isLoading, refetch } = useQuery({
     queryKey: [

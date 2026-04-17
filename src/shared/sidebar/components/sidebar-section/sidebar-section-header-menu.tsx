@@ -1,5 +1,3 @@
-import { USER_ROLE } from '@/core/constant/config.constant';
-import RoleBasedComponent from '@/shared/authentication/role-based-component';
 import IconConfiguration from '@/shared/icon/configuration';
 import IconGroup from '@/shared/icon/group';
 import IconPlus from '@/shared/icon/plus';
@@ -51,27 +49,25 @@ const SidebarSectionHeaderMenu = () => {
     },
   ];
   return (
-    <RoleBasedComponent role={USER_ROLE.SUPER_ADMIN}>
-      <Dropdown
-        trigger={['click']}
-        placement="bottomLeft"
-        openClassName="noDrag"
-        overlayClassName="noDrag"
-        rootClassName="noDrag"
-        menu={{ items, onClick: onMenuClick }}
-        className="noDrag"
-        onOpenChange={handleOpenChange}
-        open={openMenu}
-      >
-        <IconGroup
-          mode="white"
-          width={16}
-          height={16}
-          onClick={(e) => e.stopPropagation()}
-          className="noDrag hover:cursor-pointer"
-        />
-      </Dropdown>
-    </RoleBasedComponent>
+    <Dropdown
+      trigger={['click']}
+      placement="bottomLeft"
+      openClassName="noDrag"
+      overlayClassName="noDrag"
+      rootClassName="noDrag"
+      menu={{ items, onClick: onMenuClick }}
+      className="noDrag"
+      onOpenChange={handleOpenChange}
+      open={openMenu}
+    >
+      <IconGroup
+        mode="white"
+        width={16}
+        height={16}
+        onClick={(e) => e.stopPropagation()}
+        className="noDrag hover:cursor-pointer"
+      />
+    </Dropdown>
   );
 };
 

@@ -53,10 +53,10 @@ const Router = createBrowserRouter([
       //   element: <SampleDashboard />,
       // },
 
-      // // Management
+      // Management
       // {
       //   path: '/user-management',
-      //   element: <User />,
+      //   element: <ManagementUser />,
       // },
       // {
       //   path: '/role',
@@ -64,7 +64,7 @@ const Router = createBrowserRouter([
       // },
       // {
       //   path: '/setting',
-      //   element: <SampleDashboard />,
+      //   element: <SubPage />, // Using SubPage as placeholder if SampleDashboard is missing
       // },
 
       // // Database

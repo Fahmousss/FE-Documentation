@@ -6,7 +6,6 @@ import { IconProps } from '../../icon/types';
 
 export interface ISidebar extends Partial<ISidebarServer> {
   Image?: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
-  role?: string;
 }
 
 export interface SidebarProps extends VariantProps<typeof listVariants> {
@@ -19,12 +18,12 @@ export interface SidebarProps extends VariantProps<typeof listVariants> {
 }
 
 export interface SidebarListProps
-  extends Omit<HTMLAttributes<HTMLAnchorElement>, 'title' | 'role'>,
+  extends Omit<HTMLAttributes<HTMLAnchorElement>, 'title'>,
     SidebarProps {
   isLogout?: boolean;
 }
 
-export interface SidebarChild extends Omit<ISidebar, 'role' | 'child'> {}
+export interface SidebarChild extends Omit<ISidebar, 'child'> {}
 
 export interface SidebarState {
   show: boolean;

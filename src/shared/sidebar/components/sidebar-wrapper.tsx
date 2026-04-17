@@ -4,13 +4,13 @@ import { setActive } from '@/core/store/slice/sidebar.slice';
 import { cn } from '@/core/utils/class.utils';
 import { ReactNode, useEffect, useState } from 'react';
 import useColor from '../../../core/hooks/use-color';
-import useSection from '../hooks/use-section';
+// import useSection from '../hooks/use-section';
 import { SidebarContext } from '../hooks/use-sidebar-context';
 
 const SidebarWrapper = ({ children }: { children: ReactNode }) => {
   const { colorList } = useColor();
   const [search, setSearch] = useState('');
-  const { dataSection, refetchSection } = useSection();
+  // const { dataSection, refetchSection } = useSection();
   const dispatch = useAppDispatch();
   const path = usePath();
   const { isOpen, show } = useAppSelector((state) => state.sidebar);
@@ -23,8 +23,8 @@ const SidebarWrapper = ({ children }: { children: ReactNode }) => {
       value={{
         search,
         setSearch,
-        dataSection: dataSection ?? [],
-        refetchSection,
+        // dataSection: dataSection ?? [],
+        // refetchSection,
       }}
     >
       <div

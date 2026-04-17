@@ -6,21 +6,15 @@ import { Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-  const [form] = Form.useForm<{ username: string; password: string }>();
+  const [form] = Form.useForm<{ email: string; password: string }>();
   const navigate = useNavigate();
-  // const { login } = useAuth();
+  const { login } = useAuth();
 
-  // const onFinish = ({ username, password }: { username: string; password: string }) => {
-  //   login({ username: username, password: password }).then(() => {
-  //     navigate('/');
-  //   });
-  // };
-
-  // const handleLoginAsGuest = () => {
-  //   login({ username: 'guest', password: '' }).then(() => {
-  //     navigate('/');
-  //   });
-  // };
+  const onFinish = ({ email, password }: { email: string; password: string }) => {
+    login({ email, password }).then(() => {
+      navigate('/');
+    });
+  };
 
   return (
     <div className="bg-neutral-50 h-[98vh] flex justify-center items-center">
@@ -30,19 +24,20 @@ const LoginForm = () => {
         <Form
           form={form}
           layout="vertical"
-          // onFinish={onFinish}
+          onFinish={onFinish}
           className="flex flex-col gap-3 my-7"
         >
           <Form.Item
             required
-            name={'username'}
-            label={<FormLabel className="text-grey-500" label="Email/Username" />}
+            name={'email'}
+            label={<FormLabel className="text-grey-500" label="Email" />}
+            rules={[{ required: true, type: 'email', message: 'Please enter a valid email!' }]}
           >
             <Input
               required
               className=""
               size="large"
-              placeholder="Enter your email address or username"
+              placeholder="Enter your email address"
             />
           </Form.Item>
           <Form.Item
@@ -65,14 +60,8 @@ const LoginForm = () => {
               size="large"
             />
           </Form.Item>
-          <div className="flex items-center justify-between">
-            <p
-              className="cursor-pointer text-green-600 font-semibold text-md underline"
-              // onClick={handleLoginAsGuest}
-            >
-              Login as Guest
-            </p>
-            <p className="text-grey-100">Forget password</p>
+          <div className="flex items-center justify-end">
+            <p className="text-grey-100 hover:cursor-pointer">Forget password</p>
           </div>
           <div className="py-5">
             <button
@@ -87,5 +76,6 @@ const LoginForm = () => {
     </div>
   );
 };
+
 
 export default LoginForm;

@@ -1,4 +1,6 @@
+import { ACCESS_TOKEN } from '@/core/constant/config.constant';
 import useColor from '@/core/hooks/use-color';
+import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../shared/navbar';
@@ -12,11 +14,11 @@ function Layout() {
   const { colorList } = useColor();
 
   useEffect(() => {
-    //  delete comment this line to enable authentication check
-    // if (!Cookies.get(ACCESS_TOKEN)) {
-    //   navigate('/login');
-    // }
+    if (!Cookies.get(ACCESS_TOKEN)) {
+      navigate('/login');
+    }
   }, []);
+
 
   useEffect(() => {
     const root = document.documentElement;

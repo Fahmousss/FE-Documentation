@@ -1,15 +1,10 @@
-import { ACCESS_TOKEN, REFRESH_TOKEN, ROLE, USERNAME } from '@/core/constant/config.constant';
+import useAuth from '@/core/hooks/use-auth';
 import IconLogout from '@/shared/icon/logout';
 import SidebarList from '@/shared/sidebar/components/sidebar-list/sidebar-list';
-import Cookies from 'js-cookie';
 
 const SidebarLogout = () => {
-  const handleClickLogout = () => {
-    Cookies.remove(ACCESS_TOKEN);
-    Cookies.remove(REFRESH_TOKEN);
-    Cookies.remove(USERNAME);
-    Cookies.remove(ROLE);
-  };
+  const { logout } = useAuth();
+
   return (
     <SidebarList
       isLogout
@@ -19,8 +14,8 @@ const SidebarLogout = () => {
       permissions={[]}
       isDropdown={false}
       isDescendant={false}
-      onClick={handleClickLogout}
-      item={{ name: 'Logout', Image: IconLogout, path: '/login' }}
+      onClick={logout}
+      item={{ name: 'Logout', Image: IconLogout }}
     />
   );
 };

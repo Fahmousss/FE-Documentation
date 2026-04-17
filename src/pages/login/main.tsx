@@ -10,9 +10,9 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     //  delete comment this line to enable authentication check
-    // if (Cookies.get(ACCESS_TOKEN)) {
-    //   navigate('/');
-    // }
+    if (Cookies.get(ACCESS_TOKEN)) {
+      navigate('/');
+    }
   }, []);
   return (
     <div className="h-screen grid grid-rows-2">

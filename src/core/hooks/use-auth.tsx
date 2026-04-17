@@ -1,66 +1,58 @@
-import Cookies from 'js-cookie'; 
-import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
+import { CookieAttributes } from 'node_modules/@types/js-cookie';
 import {
   ACCESS_TOKEN,
   DEFAULT_EXPIRES_TOKEN,
-  REFRESH_TOKEN,
-  ROLE,
+  USER_ID,
   USERNAME,
 } from '../constant/config.constant';
 import { HTTPResponse } from '../models/http.types';
 import axiosGuest from '../utils/axios-guest.utils';
+import axios from '../utils/axios.utils';
 import { useMessageContext } from './use-message-context';
-import { CookieAttributes } from 'node_modules/@types/js-cookie';
 
 export interface User {
-  username?: string;
-  role?: string;
+  id: string | number;
+  name: string;
+  email: string;
 }
 
 type LoginHttpResponse = {
-  accessToken: string;
-  refreshToken: string;
+  token: string;
+  user: User;
 };
 
-export interface IDecodedToken {
-  username: string;
-  role_name: string;
-  exp: number;
-}
-
 export interface Login {
-  username: string;
+  email: string;
   password: string;
 }
 
 export default function useAuth() {
   const { openMessage } = useMessageContext();
 
-  async function login(credential: { username: string; password: string }): Promise<void> {
+  async function login(credential: Login): Promise<void> {
     try {
       const {
         data: { data },
-      } = await axiosGuest.post<HTTPResponse<LoginHttpResponse>>('/authentication', {
+      } = await axiosGuest.post<HTTPResponse<LoginHttpResponse>>('/login', {
         ...credential,
       });
 
-      // Get data from Response
-      const { accessToken, refreshToken } = data;
+      // Get data from Response (Sanctum)
+      const { token, user } = data;
 
       // Options cookie
-      const decodedToken = jwtDecode(accessToken);
-      const { username, role_name } = decodedToken as IDecodedToken;
-
-      // Update tokens di cookie
       const cookieOptions: CookieAttributes = {
         path: '/',
         expires: DEFAULT_EXPIRES_TOKEN,
         secure: false,
       };
-      Cookies.set(ACCESS_TOKEN, accessToken, cookieOptions);
-      Cookies.set(REFRESH_TOKEN, refreshToken, cookieOptions);
-      Cookies.set(USERNAME, username, cookieOptions);
-      Cookies.set(ROLE, role_name, cookieOptions);
+
+      // Update tokens di cookie
+      Cookies.set(ACCESS_TOKEN, token, cookieOptions);
+      Cookies.set(USERNAME, user.name, cookieOptions);
+      Cookies.set(USER_ID, String(user.id), cookieOptions);
+
       openMessage({
         title: 'Login Success',
         message: 'You have been successfully logged in',
@@ -69,14 +61,29 @@ export default function useAuth() {
     } catch (e) {
       openMessage({
         title: 'Failed to login',
-        message: 'Invalid username or password',
+        message: 'Invalid email or password',
         mode: 'danger',
       });
       throw e;
     }
   }
 
+  async function logout(): Promise<void> {
+    try {
+      await axios.post('/logout');
+    } catch (e) {
+      console.error('Logout error:', e);
+    } finally {
+      // Always clear cookies and redirect regardless of API success
+      Cookies.remove(ACCESS_TOKEN);
+      Cookies.remove(USERNAME);
+      Cookies.remove(USER_ID);
+      window.location.href = '/login';
+    }
+  }
+
   return {
     login,
+    logout,
   };
 }

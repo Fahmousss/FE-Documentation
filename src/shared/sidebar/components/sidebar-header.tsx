@@ -10,10 +10,10 @@ import ModalSection from './sidebar-section/modal-section';
 const SidebarHeader = () => {
   const { openModal, open, closeModal } = useModal();
   const { colorList } = useColor();
-  const { search, setSearch } = useSidebarContext();
-  const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+  // const { search, setSearch } = useSidebarContext();
+  // const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setSearch(e.target.value);
+  // };
   return (
     <>
       <div

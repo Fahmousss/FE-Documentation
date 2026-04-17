@@ -31,7 +31,7 @@ const LoginVariant1 = ({
     if (onLogin) {
       await onLogin(data);
     } else {
-      await login({ username: data.username, password: data.password });
+      await login({ email: data.email, password: data.password });
       navigate('/');
     }
   };
@@ -40,7 +40,7 @@ const LoginVariant1 = ({
     if (onGuestLogin) {
       await onGuestLogin();
     } else {
-      await login({ username: 'guest', password: 'guest' });
+      await login({ email: 'guest', password: 'guest' });
       navigate('/');
     }
   };
@@ -86,11 +86,11 @@ const LoginVariant1 = ({
 
           {/* Form Section */}
           <Form form={form} layout="vertical" onFinish={onFinish} className="space-y-2">
-            <Form.Item name="username" label={<FormLabel label="Username" />}>
+            <Form.Item name="email" label={<FormLabel label="Email" />}>
               <Input
                 className={`h-10 rounded-lg bg-neutral-50 border-gray-300 ${customStyles.input || ''}`}
                 size="middle"
-                placeholder="Input username"
+                placeholder="Input Email"
                 prefix={<User size={19} className="text-gray-400 mr-0.5" />}
               />
             </Form.Item>
